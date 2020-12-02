@@ -3,6 +3,7 @@ import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.highgui.HighGui
+import org.opencv.imgproc.Imgproc
 import kotlin.system.exitProcess
 
 class PrototypeApp {
@@ -37,7 +38,12 @@ class PrototypeApp {
         val detector = createDetector()
         for ((index, bgr, rgb, gray) in frames(pathId)) {
             val currentDetections = detector.detect(rgb)?.digitsDetections ?: listOf()
-
+            for (det in currentDetections) {
+                Imgproc.rectangle(bgr, det.boxInImage, Scalar(0, 255, 0), 1)
+            }
+            HighGui.imshow("bgr", bgr)
+            if (HighGui.waitKey(0) == 27)
+                break
         }
 
     }
