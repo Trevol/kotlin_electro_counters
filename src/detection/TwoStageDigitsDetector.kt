@@ -9,8 +9,7 @@ class TwoStageDigitsDetector(
     fun detect(image: Mat): TwoStageDigitDetectionResult? {
         val screenDetection = screenDetector.detect(image).detections
             .filter { it.classId == screenClassId }
-            // if multiple screen detected - choose closest to image center
-            .minByOrNull { it.box.center().L2squared(image.center()) }
+            .minByOrNull { it.box.center().L2squared(image.center()) } // choose closest to image center
             ?: return null
 
         val (screenImg, screenRoi) = image.roi(screenDetection.box.toRect(), .15, .15)
