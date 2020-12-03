@@ -36,7 +36,7 @@ class PrototypeApp {
     fun run() {
         val pathId = 1
         val detector = createDetector()
-        for ((index, bgr, rgb, gray) in frames(pathId)) {
+        for ((index, bgr, rgb) in frames(pathId)) {
             val currentDetections = detector.detect(rgb)?.digitsDetections ?: listOf()
             for (det in currentDetections) {
                 Imgproc.rectangle(bgr, det.boxInImage, Scalar(0, 255, 0), 1)
