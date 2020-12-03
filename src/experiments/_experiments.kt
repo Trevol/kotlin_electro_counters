@@ -1,18 +1,22 @@
-import nu.pattern.OpenCV
-import org.opencv.highgui.HighGui
-import kotlin.system.exitProcess
-
 fun main() {
-    OpenCV.loadLocally()
+    val mm = mapOf(
+        0 to Pair("00", "0_0"),
+        1 to Pair("11", "1_1")
+    )
+    // for ((k, v) in mm) {
+    //     println("-----------------")
+    //     println(k)
+    //     println(v)
+    // }
 
-    val path = "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/images/smooth_frames/" +
-            "1/*.jpg"
-    for ((index, bgr, rgb, gray) in frames(path)) {
-        HighGui.imshow("bgr", bgr)
-        HighGui.imshow("rgb", rgb)
-        HighGui.imshow("gray", gray)
-        if (HighGui.waitKey(0) == 27)
-            break
-    }
-    exitProcess(0)
+    mm
+        // .map { entry ->
+        //     val (k, v) = entry
+        //     entry
+        // }
+        .map { index, values -> index to values }
+        .forEach { println(it) }
 }
+
+fun <K, V, R> Map<out K, V>.map(transform: (K, V) -> R) =
+    this.map { entry -> transform(entry.key, entry.value) }

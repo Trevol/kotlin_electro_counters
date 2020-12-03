@@ -4,6 +4,7 @@ import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import org.opencv.highgui.HighGui
 import org.opencv.imgproc.Imgproc
+import types.AggregatedDetections
 import kotlin.system.exitProcess
 
 class PrototypeApp {
@@ -36,8 +37,19 @@ class PrototypeApp {
     fun run() {
         val pathId = 1
         val detector = createDetector()
-        for ((index, bgr, rgb) in frames(pathId)) {
+        val digitExtractor = AggregatingBoxGroupingDigitExtractor()
+        val digitDetectionTracker = AggregatedDigitDetectionTracker()
+
+        var prevDetections = listOf<AggregatedDetections>()
+        var prevFrameGray: Mat? = null
+        for ((index, bgr, rgb, gray) in frames(pathId)) {
             val currentDetections = detector.detect(rgb)?.digitsDetections ?: listOf()
+            if (prevDetections.isNotEmpty()) {
+                prevDetections = digitDetectionTracker.track(prevFrameGray!!, gray, prevDetections)
+            }
+            val result = digitExtractor.extract(currentDetections, prevDetections)
+            prevFrameGray = gray
+
             for (det in currentDetections) {
                 Imgproc.rectangle(bgr, det.boxInImage, Scalar(0, 255, 0), 1)
             }
