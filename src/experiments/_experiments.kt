@@ -1,22 +1,21 @@
-fun main() {
-    val mm = mapOf(
-        0 to Pair("00", "0_0"),
-        1 to Pair("11", "1_1")
-    )
-    // for ((k, v) in mm) {
-    //     println("-----------------")
-    //     println(k)
-    //     println(v)
-    // }
+package experiments
 
-    mm
-        // .map { entry ->
-        //     val (k, v) = entry
-        //     entry
-        // }
-        .map { index, values -> index to values }
-        .forEach { println(it) }
+import nu.pattern.OpenCV
+import org.opencv.core.*
+import java.awt.geom.FlatteningPathIterator
+
+fun main() {
+    sequence { yield(1) }.toList()
 }
 
-fun <K, V, R> Map<out K, V>.map(transform: (K, V) -> R) =
-    this.map { entry -> transform(entry.key, entry.value) }
+fun printArgs(vararg args: Any) {
+    for (arg in args) {
+        print(arg)
+        print(" ")
+    }
+}
+
+fun println(vararg args: Any) {
+    print(args)
+    kotlin.io.println()
+}

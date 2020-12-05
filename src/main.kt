@@ -8,9 +8,10 @@ import types.AggregatedDetections
 import kotlin.system.exitProcess
 
 class PrototypeApp {
-    companion object {        init {
-        OpenCV.loadLocally()
-    }
+    companion object {
+        init {
+            OpenCV.loadLocally()
+        }
     }
 
     fun frames(id: Int): Sequence<FrameResult> {
@@ -48,6 +49,8 @@ class PrototypeApp {
                 prevDetections = digitDetectionTracker.track(prevFrameGray!!, gray, prevDetections)
             }
             val result = digitExtractor.extract(currentDetections, prevDetections)
+            prevDetections = result.aggregatedDetections
+            val digitsAtPoints = result.digitsAtBoxes
             prevFrameGray = gray
 
             for (det in currentDetections) {
