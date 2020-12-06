@@ -45,6 +45,7 @@ class PrototypeApp {
         var prevFrameGray: Mat? = null
         for ((index, bgr, rgb, gray) in frames(pathId)) {
             val currentDetections = detector.detect(rgb)?.digitsDetections ?: listOf()
+
             if (prevDetections.isNotEmpty()) {
                 prevDetections = digitDetectionTracker.track(prevFrameGray!!, gray, prevDetections)
             }
