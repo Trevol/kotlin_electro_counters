@@ -1,3 +1,5 @@
+package utils
+
 fun Boolean.assert() {
     this.assert("Assertion failed")
 }

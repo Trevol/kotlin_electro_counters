@@ -1,3 +1,5 @@
+package tracking
+
 import org.opencv.core.*
 import tracking.RectTracker
 import types.AggregatedDetections

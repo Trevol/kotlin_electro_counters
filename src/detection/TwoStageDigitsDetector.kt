@@ -1,6 +1,10 @@
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Rect2d
+import utils.L2squared
+import utils.center
+import utils.roi
+import utils.toRect
 
 class TwoStageDigitsDetector(
     val screenDetector: DarknetDetector,
