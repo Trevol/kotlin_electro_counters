@@ -5,9 +5,7 @@ import org.opencv.imgproc.Imgproc
 import tracking.AggregatedDigitDetectionTracker
 import types.AggregatedDetections
 import types.DigitAtBox
-import utils.FrameResult
-import utils.Scalar
-import utils.copy
+import utils.*
 import kotlin.system.exitProcess
 
 class PrototypeApp {
@@ -39,36 +37,44 @@ class PrototypeApp {
     }
 
     fun run() {
-        val pathId = 1
+        val pathId = 2
         val detector = createDetector()
         val digitExtractor = AggregatingBoxGroupingDigitExtractor()
         val digitDetectionTracker = AggregatedDigitDetectionTracker()
 
-        var prevDetections = listOf<AggregatedDetections>()
+        var aggregatedDetections = listOf<AggregatedDetections>()
         var prevFrameGray: Mat? = null
-        for ((index, bgr, rgb, gray) in frames(pathId)) {
+
+        val desiredPos = 114
+
+        for ((framePos, bgr, rgb, gray) in frames(pathId)) {
             val currentDetections = detector.detect(rgb)?.digitsDetections ?: listOf()
 
-            if (prevDetections.isNotEmpty()) {
-                val oldSize = prevDetections.size
-                prevDetections = digitDetectionTracker.track(prevFrameGray!!, gray, prevDetections)
-                println("track!!! $oldSize ${prevDetections.size}")
-
+            if (aggregatedDetections.isNotEmpty()) {
+                aggregatedDetections = digitDetectionTracker.track(prevFrameGray!!, gray, aggregatedDetections)
             }
-            val result = digitExtractor.extract(currentDetections, prevDetections)
-            prevDetections = result.aggregatedDetections
+            val result = digitExtractor.extract(currentDetections, aggregatedDetections)
+
+            aggregatedDetections = result.aggregatedDetections
             val digitsAtPoints = result.digitsAtBoxes
             prevFrameGray = gray
 
-            val showResult = show(bgr, currentDetections, digitsAtPoints, prevDetections)
-            if (showResult == 27)
-                break
+            if (framePos % 20 == 0) {
+                println("framePos::", framePos)
+            }
+            if (framePos >= desiredPos) {
+                val showResult = show(bgr, framePos, currentDetections, digitsAtPoints, aggregatedDetections)
+                if (showResult == 27)
+                    break
+            }
         }
     }
 
     val greenBgr = Scalar(0, 255, 0)
+    val redBgr = Scalar(0, 0, 255)
     private fun show(
         bgr: Mat,
+        pos: Int,
         currentDetections: Iterable<DigitDetectionResult>,
         digitsAtPoints: Iterable<DigitAtBox>,
         aggregatedDetections: Iterable<AggregatedDetections>
@@ -77,7 +83,9 @@ class PrototypeApp {
         val aggregatedDetectionsImg = bgr.copy()
 
         for (det in currentDetections) {
-            Imgproc.rectangle(bgr, det.boxInImage, greenBgr, 1)
+            val box = det.boxInImage.toRect()
+            Imgproc.rectangle(bgr, box, greenBgr, 1)
+            // Imgproc.rectangle(aggregatedDetectionsImg, box, redBgr, 1)
         }
         for (d in digitsAtPoints) {
             Imgproc.putText(
@@ -86,11 +94,11 @@ class PrototypeApp {
             )
         }
         for (d in aggregatedDetections) {
-            Imgproc.rectangle(aggregatedDetectionsImg, d.box, greenBgr)
+            Imgproc.rectangle(aggregatedDetectionsImg, d.box.toRect(), greenBgr)
         }
 
         HighGui.imshow("digits", digitsImg)
-        HighGui.imshow("detections", bgr)
+        // HighGui.imshow("detections", bgr)
         HighGui.imshow("aggregated", aggregatedDetectionsImg)
         return HighGui.waitKey(0)
     }

@@ -10,11 +10,8 @@ import tracking.AggregatedDigitDetectionTracker
 import tracking.RectTracker
 import types.AggregatedDetections
 import types.DigitCount
-import utils.FrameResult
-import utils.Scalar
-import utils.frames
+import utils.*
 import kotlin.system.exitProcess
-import utils.println
 
 private fun frames__(): Pair<Mat, Mat> {
     val path = "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/images/smooth_frames/1/"
@@ -37,7 +34,7 @@ fun main_track_AggregatedDetections() {
 
     val tracker = AggregatedDigitDetectionTracker()
 
-    val box = Rect(600, 370, 20, 27)
+    val box = Rect2d(600, 370, 20, 27)
     var detections = listOf(
         AggregatedDetections(box, .8f, listOf(DigitCount(2, 1)))
     )
@@ -45,13 +42,13 @@ fun main_track_AggregatedDetections() {
 
     for ((index, bgr, rgb, gray) in frames(1)) {
         if (prevGray != null) {
-            detections = tracker.track(gray, prevGray, detections)
+            detections = tracker.track(prevGray, gray, detections)
         }
         prevGray = gray
 
 
         detections.forEach {
-            Imgproc.rectangle(bgr, it.box, Scalar(0, 255, 0))
+            Imgproc.rectangle(bgr, it.box.toRect(), Scalar(0, 255, 0))
         }
         HighGui.imshow("dd", bgr)
         if (HighGui.waitKey(0) == 27)
@@ -69,7 +66,7 @@ fun main_track_Boxes() {
     val tracker = RectTracker()
 
     var boxes = listOf(
-        Rect(600, 370, 20, 27)
+        Rect2d(600, 370, 20, 27)
     )
 
     var prevGray: Mat? = null
@@ -83,7 +80,7 @@ fun main_track_Boxes() {
 
 
         boxes.forEach {
-            Imgproc.rectangle(bgr, it, Scalar(0, 255, 0))
+            Imgproc.rectangle(bgr, it.toRect(), Scalar(0, 255, 0))
         }
         HighGui.imshow("dd", bgr)
         if (HighGui.waitKey(0) == 27)
@@ -108,14 +105,8 @@ fun main_track_Points() {
 
     var prevGray = frames.next().gray
     for ((pos, bgr, rgb, gray) in frames) {
-
         val (nextPts, statuses) = tracker.trackPoints(prevGray, gray, pts)
-        println("prevPts", pts)
-        println("nextPts", nextPts)
-        println("------------------------")
         pts = nextPts
-
-
         prevGray = gray
 
         for (pt in pts)
@@ -130,7 +121,8 @@ fun main_track_Points() {
 }
 
 fun main() {
-    main_track_Boxes()
+    main_track_AggregatedDetections()
+    // main_track_Boxes()
     // main_track_Points()
 // Может проблема в Rect(p1, p2)????
 }

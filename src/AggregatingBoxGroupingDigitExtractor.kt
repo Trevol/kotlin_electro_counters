@@ -17,7 +17,7 @@ class AggregatingBoxGroupingDigitExtractor {
         val digitsCounts = currentDetections.map { listOf(DigitCount(it.digit, 1)) } +
                 prevDetections.map { it.digitsCounts }
 
-        val aggregatedDetections = groupBoxes(boxes, scores, .4f)
+        val aggregatedDetections = groupBoxes(boxes, scores, .04f)
             .groupIndices.zip(digitsCounts)
             .groupBy({ it.first }, { it.second })
             .map { index, digitsCountsByBox ->

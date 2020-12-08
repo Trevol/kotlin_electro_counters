@@ -1,10 +1,7 @@
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Rect2d
-import utils.L2squared
-import utils.center
-import utils.roi
-import utils.toRect
+import utils.*
 
 class TwoStageDigitsDetector(
     val screenDetector: DarknetDetector,
@@ -23,7 +20,7 @@ class TwoStageDigitsDetector(
         return TwoStageDigitDetectionResult(
             null,
             null,
-            screenRoi,
+            screenRoi.toRect2d(),
             screenDetection.classScore,
             digitsDetections
         )
@@ -32,14 +29,12 @@ class TwoStageDigitsDetector(
     companion object {
         const val screenClassId = 1
 
-        private fun Rect.remap(boxOfBox: Rect) = Rect(
+        private fun Rect2d.remap(boxOfBox: Rect) = Rect2d(
             x + boxOfBox.x,
             y + boxOfBox.y,
             width,
             height
         )
-
-        private fun Rect2d.remap(boxOfBox: Rect) = this.toRect().remap(boxOfBox)
     }
 }
 

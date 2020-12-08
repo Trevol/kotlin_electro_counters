@@ -3,34 +3,31 @@ package tracking
 import org.opencv.core.*
 import org.opencv.utils.Converters
 import org.opencv.video.SparsePyrLKOpticalFlow
-import utils.println
 
 class RectTracker {
-    data class Result(val nextBoxes: List<Rect>, val statuses: List<Boolean>)
+    data class Result(val nextBoxes: List<Rect2d>, val statuses: List<Boolean>)
 
-    fun track(prevImg: Mat, nextImg: Mat, prevBoxes: List<Rect>): Result {
+    fun track(prevImg: Mat, nextImg: Mat, prevBoxes: List<Rect2d>): Result {
         if (prevBoxes.isEmpty()) {
             return Result(listOf(), listOf())
         }
         val prevPts = prevBoxes.toTrackedPts()
         val (nextPts, nextPtsStatuses) = trackPoints(prevImg, nextImg, prevPts)
-        println("prevPts", prevPts)
-        println("nextPts", nextPts)
-        println("----------------------")
 
         val nextPtsIter = nextPts.iterator()
         val statusesIter = nextPtsStatuses.iterator()
 
-        val nextBoxes = mutableListOf<Rect>()
+        val nextBoxes = mutableListOf<Rect2d>()
         val statuses = mutableListOf<Boolean>()
         while (nextPtsIter.hasNext()) {
-            val point1 = nextPtsIter.next()
-            val point2 = nextPtsIter.next()
-            val status1 = statusesIter.next()
-            val status2 = statusesIter.next()
+            val tl = nextPtsIter.next()
+            val br = nextPtsIter.next()
+            val tlStatus = statusesIter.next()
+            val brStatus = statusesIter.next()
 
-            nextBoxes.add(Rect(point1, point2))
-            statuses.add(status1 == statusOk && status2 == statusOk)
+            nextBoxes.add(Rect2d(tl, br))
+            val pointsInRightOrder = tl.x < br.x && tl.y < br.y
+            statuses.add(pointsInRightOrder && tlStatus == statusOk && brStatus == statusOk)
         }
 
         return Result(nextBoxes, statuses)
@@ -51,7 +48,7 @@ class RectTracker {
 
         val statusOk: Byte = 1
 
-        fun List<Rect>.toTrackedPts(): List<Point> {
+        fun List<Rect2d>.toTrackedPts(): List<Point> {
             val pts = mutableListOf<Point>()
             for (box in this) {
                 pts.add(box.tl())

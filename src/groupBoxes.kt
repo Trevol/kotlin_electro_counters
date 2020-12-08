@@ -1,9 +1,10 @@
 import org.opencv.core.Rect
+import org.opencv.core.Rect2d
 import utils.overlap
 
 data class GroupBoxesResult(val groupIndices: Collection<Int>, val keptIndices: Collection<Int>)
 
-fun groupBoxes(boxes: List<Rect>, scores: Collection<Float>?, overlap_threshold: Float): GroupBoxesResult {
+fun groupBoxes(boxes: List<Rect2d>, scores: Collection<Float>?, overlap_threshold: Float): GroupBoxesResult {
     assert(scores == null || (boxes.size == scores.size))
     assert(overlap_threshold >= 0)
 
@@ -29,7 +30,7 @@ data class ShouldKeepBoxResult(val keep: Boolean, val maxOverlapIndex: Int)
 
 private fun shouldKeepBox(
     currentBoxIndex: Int,
-    boxes: List<Rect>,
+    boxes: List<Rect2d>,
     keptIndices: Collection<Int>,
     overlap_threshold: Float
 ): ShouldKeepBoxResult {
@@ -50,6 +51,6 @@ private fun shouldKeepBox(
     return ShouldKeepBoxResult(keep, maxOverlapIndex)
 }
 
-private inline fun indicesByScore(boxes: Collection<Rect>, scores: Collection<Float>?) =
+private inline fun indicesByScore(boxes: Collection<Rect2d>, scores: Collection<Float>?) =
     scores?.mapIndexed { index, score -> index to score }?.sortedByDescending { it.second }?.map { it.first }
         ?: boxes.mapIndexed { index, _ -> index }

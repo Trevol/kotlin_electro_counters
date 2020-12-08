@@ -1,13 +1,14 @@
 import org.opencv.core.Mat
 import org.opencv.core.Rect
+import org.opencv.core.Rect2d
 
 data class TwoStageDigitDetectionResult(
-    val counterBox: Rect?,
+    val counterBox: Rect2d?,
     val counterScore: Float?,
-    val screenBox: Rect,
+    val screenBox: Rect2d,
     val screenScore: Float,
 
     val digitsDetections: Collection<DigitDetectionResult>
 )
 
-data class DigitDetectionResult(val digit: Int, val score: Float, val boxInImage: Rect)
+data class DigitDetectionResult(val digit: Int, val score: Float, val boxInImage: Rect2d)

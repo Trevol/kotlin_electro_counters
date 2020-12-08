@@ -27,12 +27,9 @@ class AggregatedDigitDetectionTracker {
         return nextObjects
     }
 
-    private fun isAbnormalTrack(prevBox: Rect, nextBox: Rect): Boolean {
-        if (nextBox.tl().x > nextBox.br().x || nextBox.tl().y > nextBox.br().y) {
-            return true
-        }
-        val wRatio = prevBox.width / nextBox.width.toDouble()
-        val hRatio = prevBox.height / nextBox.height.toDouble()
+    private fun isAbnormalTrack(prevBox: Rect2d, nextBox: Rect2d): Boolean {
+        val wRatio = prevBox.width / nextBox.width
+        val hRatio = prevBox.height / nextBox.height
 
         return isNormalRatio(wRatio).not() || isNormalRatio(hRatio).not()
     }
