@@ -37,7 +37,7 @@ class PrototypeApp {
     }
 
     fun run() {
-        val pathId = 2
+        val pathId = 1
         val detector = createDetector()
         val digitExtractor = AggregatingBoxGroupingDigitExtractor()
         val digitDetectionTracker = AggregatedDigitDetectionTracker()
@@ -72,6 +72,7 @@ class PrototypeApp {
 
     val greenBgr = Scalar(0, 255, 0)
     val redBgr = Scalar(0, 0, 255)
+    val digitRenderer = DigitRenderer(15, Imgproc.FONT_HERSHEY_SIMPLEX)
     private fun show(
         bgr: Mat,
         pos: Int,
@@ -88,10 +89,7 @@ class PrototypeApp {
             // Imgproc.rectangle(aggregatedDetectionsImg, box, redBgr, 1)
         }
         for (d in digitsAtPoints) {
-            Imgproc.putText(
-                digitsImg, d.digit.toString(), d.box.tl(), Imgproc.FONT_HERSHEY_SIMPLEX, .5,
-                greenBgr, 1
-            )
+            digitRenderer.render(digitsImg, d.digit, d.box.center(), greenBgr)
         }
         for (d in aggregatedDetections) {
             Imgproc.rectangle(aggregatedDetectionsImg, d.box.toRect(), greenBgr)
