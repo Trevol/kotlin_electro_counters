@@ -1,3 +1,4 @@
+import detection.DigitDetectionResult
 import types.AggregatedDetections
 import types.DigitAtBox
 import types.DigitCount

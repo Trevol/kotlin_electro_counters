@@ -1,3 +1,6 @@
+import detection.DarknetDetector
+import detection.DigitDetectionResult
+import detection.TwoStageDigitsDetector
 import nu.pattern.OpenCV
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui

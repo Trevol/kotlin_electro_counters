@@ -1,3 +1,5 @@
+package detection
+
 import org.opencv.core.Rect2d
 
 data class ObjectDetectionResult(

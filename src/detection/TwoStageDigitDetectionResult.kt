@@ -1,5 +1,5 @@
-import org.opencv.core.Mat
-import org.opencv.core.Rect
+package detection
+
 import org.opencv.core.Rect2d
 
 data class TwoStageDigitDetectionResult(

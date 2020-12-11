@@ -1,3 +1,5 @@
+package detection
+
 import org.opencv.core.*
 import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
