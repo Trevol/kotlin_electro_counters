@@ -40,7 +40,7 @@ class PrototypeApp {
     }
 
     fun run() {
-        //TODO("sync packages with android project")
+        // TODO("sync packages with android project")
         // TODO("make class AggregatingSequentialDetector. Store and update state (aggregatedDetections, prevFrame)")
         val pathId = 1
         val detector = createDetector()
