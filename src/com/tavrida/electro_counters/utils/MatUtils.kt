@@ -1,4 +1,4 @@
-package utils
+package com.tavrida.electro_counters.utils
 
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs

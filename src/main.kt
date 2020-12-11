@@ -1,14 +1,15 @@
-import detection.DarknetDetector
-import detection.DigitDetectionResult
-import detection.TwoStageDigitsDetector
+import com.tavrida.electro_counters.aggregation.AggregatingBoxGroupingDigitExtractor
+import com.tavrida.electro_counters.detection.DarknetDetector
+import com.tavrida.electro_counters.detection.DigitDetectionResult
+import com.tavrida.electro_counters.detection.TwoStageDigitsDetector
+import com.tavrida.electro_counters.tracking.AggregatedDigitDetectionTracker
+import com.tavrida.electro_counters.types.AggregatedDetections
+import com.tavrida.electro_counters.types.DigitAtBox
 import nu.pattern.OpenCV
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui
 import org.opencv.imgproc.Imgproc
-import tracking.AggregatedDigitDetectionTracker
-import types.AggregatedDetections
-import types.DigitAtBox
-import utils.*
+import com.tavrida.electro_counters.utils.*
 import kotlin.system.exitProcess
 
 class PrototypeApp {
@@ -21,7 +22,7 @@ class PrototypeApp {
     fun frames(id: Int): Sequence<FrameResult> {
         val path = "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/images/smooth_frames/" +
                 "$id/*.jpg"
-        return utils.frames(path)
+        return com.tavrida.electro_counters.utils.frames(path)
     }
 
     fun createDetector(): TwoStageDigitsDetector {

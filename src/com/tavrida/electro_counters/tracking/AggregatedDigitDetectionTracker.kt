@@ -1,9 +1,8 @@
-package tracking
+package com.tavrida.electro_counters.tracking
 
+import com.tavrida.electro_counters.types.AggregatedDetections
 import org.opencv.core.*
-import tracking.RectTracker
-import types.AggregatedDetections
-import utils.zip
+import com.tavrida.electro_counters.utils.zip
 
 class AggregatedDigitDetectionTracker {
     private val tracker = RectTracker()

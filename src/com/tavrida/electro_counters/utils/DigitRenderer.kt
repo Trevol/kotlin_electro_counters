@@ -1,9 +1,8 @@
-package utils
+package com.tavrida.electro_counters.utils
 
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Scalar
-import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 
 class DigitRenderer(fontHeight: Int, private val fontFace: Int, private val fontThickness: Int = 1) {

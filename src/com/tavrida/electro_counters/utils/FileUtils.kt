@@ -1,4 +1,4 @@
-package utils
+package com.tavrida.electro_counters.utils
 
 import java.io.File
 import java.nio.file.FileSystems

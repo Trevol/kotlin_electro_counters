@@ -1,10 +1,9 @@
-package detection
+package com.tavrida.electro_counters.detection
 
 import org.opencv.core.*
 import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
-import utils.latterbox
-import java.util.*
+import com.tavrida.electro_counters.utils.latterbox
 import kotlin.collections.ArrayList
 
 class DarknetDetector {

@@ -1,12 +1,11 @@
-package experiments
+package stuff.experiments
 
-import detection.DarknetDetector
+import com.tavrida.electro_counters.detection.DarknetDetector
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
 import nu.pattern.OpenCV
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
-import utils.bgr2rgb
+import com.tavrida.electro_counters.utils.bgr2rgb
 import kotlin.system.measureTimeMillis
 
 fun createDetector(): DarknetDetector {

@@ -1,4 +1,4 @@
-package tracking
+package com.tavrida.electro_counters.tracking
 
 import org.opencv.core.*
 import org.opencv.utils.Converters

@@ -1,9 +1,7 @@
-package utils
+package com.tavrida.electro_counters.utils
 
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
-import utils.glob
-import java.io.File
 
 fun frames(path: String) = sequence {
     glob(path)

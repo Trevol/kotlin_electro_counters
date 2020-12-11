@@ -1,7 +1,9 @@
-import detection.DigitDetectionResult
-import types.AggregatedDetections
-import types.DigitAtBox
-import types.DigitCount
+package com.tavrida.electro_counters.aggregation
+
+import com.tavrida.electro_counters.detection.DigitDetectionResult
+import com.tavrida.electro_counters.types.AggregatedDetections
+import com.tavrida.electro_counters.types.DigitAtBox
+import com.tavrida.electro_counters.types.DigitCount
 
 data class Digits_AggregatedDetections(
     val digitsAtBoxes: List<DigitAtBox>,

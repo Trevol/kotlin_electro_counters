@@ -1,4 +1,4 @@
-package types
+package com.tavrida.electro_counters.types
 
 import org.opencv.core.Rect2d
 

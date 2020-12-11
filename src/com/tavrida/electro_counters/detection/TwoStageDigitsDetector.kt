@@ -1,9 +1,9 @@
-package detection
+package com.tavrida.electro_counters.detection
 
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Rect2d
-import utils.*
+import com.tavrida.electro_counters.utils.*
 
 class TwoStageDigitsDetector(
     val screenDetector: DarknetDetector,
