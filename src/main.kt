@@ -12,6 +12,13 @@ import org.opencv.imgproc.Imgproc
 import com.tavrida.electro_counters.utils.*
 import kotlin.system.exitProcess
 
+class AggregatingSequentialDigitDetector {
+    private var prevImg: Mat? = null
+    fun detect(img: Mat) {
+
+    }
+}
+
 class PrototypeApp {
     companion object {
         init {
