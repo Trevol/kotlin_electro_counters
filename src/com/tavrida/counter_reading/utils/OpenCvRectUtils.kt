@@ -1,4 +1,4 @@
-package com.tavrida.electro_counters.utils
+package com.tavrida.counter_reading.utils
 
 import org.opencv.core.Point
 import org.opencv.core.Rect

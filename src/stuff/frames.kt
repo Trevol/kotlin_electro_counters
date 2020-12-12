@@ -1,5 +1,7 @@
-package com.tavrida.electro_counters.utils
+package stuff
 
+import com.tavrida.counter_reading.utils.bgr2rgb
+import com.tavrida.counter_reading.utils.glob
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
 

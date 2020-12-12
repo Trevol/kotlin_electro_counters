@@ -1,7 +1,7 @@
-package com.tavrida.electro_counters.aggregation
+package com.tavrida.counter_reading.aggregation
 
 import org.opencv.core.Rect2d
-import com.tavrida.electro_counters.utils.overlap
+import com.tavrida.counter_reading.utils.overlap
 
 data class GroupBoxesResult(val groupIndices: Collection<Int>, val keptIndices: Collection<Int>)
 

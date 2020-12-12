@@ -1,4 +1,4 @@
-package com.tavrida.electro_counters.detection
+package com.tavrida.counter_reading.detection
 
 import org.opencv.core.Rect2d
 

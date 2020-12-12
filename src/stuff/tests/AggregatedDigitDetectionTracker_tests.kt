@@ -1,15 +1,20 @@
 package stuff.tests
 
+import com.tavrida.counter_reading.utils.Rect2d
+import com.tavrida.counter_reading.utils.Scalar
+import com.tavrida.counter_reading.utils.bgr2gray
+import com.tavrida.counter_reading.utils.toRect
 import com.tavrida.electro_counters.tracking.AggregatedDigitDetectionTracker
 import com.tavrida.electro_counters.tracking.RectTracker
-import com.tavrida.electro_counters.types.AggregatedDetections
-import com.tavrida.electro_counters.types.DigitCount
+import com.tavrida.counter_reading.aggregation.AggregatedDetections
+import com.tavrida.counter_reading.aggregation.DigitCount
 import nu.pattern.OpenCV
 import org.opencv.core.*
 import org.opencv.highgui.HighGui
 import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
-import com.tavrida.electro_counters.utils.*
+import stuff.FrameResult
+import stuff.frames
 import kotlin.system.exitProcess
 
 private fun frames__(): Pair<Mat, Mat> {

@@ -1,14 +1,16 @@
-import com.tavrida.electro_counters.CounterReadingScanner
-import com.tavrida.electro_counters.detection.DarknetDetector
-import com.tavrida.electro_counters.detection.DigitDetectionResult
-import com.tavrida.electro_counters.detection.TwoStageDigitsDetector
-import com.tavrida.electro_counters.types.AggregatedDetections
-import com.tavrida.electro_counters.types.DigitAtBox
-import com.tavrida.electro_counters.utils.*
+import com.tavrida.counter_reading.CounterReadingScanner
+import com.tavrida.counter_reading.detection.DarknetDetector
+import com.tavrida.counter_reading.detection.DigitDetectionResult
+import com.tavrida.counter_reading.detection.TwoStageDigitsDetector
+import com.tavrida.counter_reading.utils.*
+import com.tavrida.counter_reading.aggregation.AggregatedDetections
+import com.tavrida.counter_reading.aggregation.DigitAtBox
 import nu.pattern.OpenCV
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui
 import org.opencv.imgproc.Imgproc
+import stuff.FrameResult
+import stuff.frames
 import kotlin.system.exitProcess
 
 class PrototypeApp {
