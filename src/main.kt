@@ -1,10 +1,10 @@
-import com.tavrida.counter_reading.CounterReadingScanner
-import com.tavrida.counter_reading.detection.DarknetDetector
-import com.tavrida.counter_reading.detection.DigitDetectionResult
-import com.tavrida.counter_reading.detection.TwoStageDigitsDetector
-import com.tavrida.counter_reading.utils.*
-import com.tavrida.counter_reading.aggregation.AggregatedDetections
-import com.tavrida.counter_reading.aggregation.DigitAtBox
+import com.tavrida.counter_scanner.CounterReadingScanner
+import com.tavrida.counter_scanner.detection.DarknetDetector
+import com.tavrida.counter_scanner.detection.DigitDetectionResult
+import com.tavrida.counter_scanner.detection.TwoStageDigitsDetector
+import com.tavrida.counter_scanner.utils.*
+import com.tavrida.counter_scanner.aggregation.AggregatedDetections
+import com.tavrida.counter_scanner.aggregation.DigitAtBox
 import nu.pattern.OpenCV
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui

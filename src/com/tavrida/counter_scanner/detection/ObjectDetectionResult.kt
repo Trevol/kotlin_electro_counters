@@ -1,4 +1,4 @@
-package com.tavrida.counter_reading.detection
+package com.tavrida.counter_scanner.detection
 
 import org.opencv.core.Rect2d
 

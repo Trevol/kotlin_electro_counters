@@ -1,13 +1,13 @@
 package stuff.tests
 
-import com.tavrida.counter_reading.utils.Rect2d
-import com.tavrida.counter_reading.utils.Scalar
-import com.tavrida.counter_reading.utils.bgr2gray
-import com.tavrida.counter_reading.utils.toRect
+import com.tavrida.counter_scanner.utils.Rect2d
+import com.tavrida.counter_scanner.utils.Scalar
+import com.tavrida.counter_scanner.utils.bgr2gray
+import com.tavrida.counter_scanner.utils.toRect
 import com.tavrida.electro_counters.tracking.AggregatedDigitDetectionTracker
 import com.tavrida.electro_counters.tracking.RectTracker
-import com.tavrida.counter_reading.aggregation.AggregatedDetections
-import com.tavrida.counter_reading.aggregation.DigitCount
+import com.tavrida.counter_scanner.aggregation.AggregatedDetections
+import com.tavrida.counter_scanner.aggregation.DigitCount
 import nu.pattern.OpenCV
 import org.opencv.core.*
 import org.opencv.highgui.HighGui

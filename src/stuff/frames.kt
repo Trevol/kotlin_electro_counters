@@ -1,7 +1,7 @@
 package stuff
 
-import com.tavrida.counter_reading.utils.bgr2rgb
-import com.tavrida.counter_reading.utils.glob
+import com.tavrida.counter_scanner.utils.bgr2rgb
+import com.tavrida.counter_scanner.utils.glob
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
 

@@ -1,4 +1,4 @@
-package com.tavrida.counter_reading.utils
+package com.tavrida.counter_scanner.utils
 
 fun <T> println(message: Iterable<T>) {
     for (m in message) {

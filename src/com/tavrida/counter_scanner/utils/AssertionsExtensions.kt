@@ -1,4 +1,4 @@
-package com.tavrida.counter_reading.utils
+package com.tavrida.counter_scanner.utils
 
 fun Boolean.assert() {
     this.assert("Assertion failed")

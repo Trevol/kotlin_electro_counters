@@ -1,6 +1,6 @@
-package com.tavrida.counter_reading.detection
+package com.tavrida.counter_scanner.detection
 
-import com.tavrida.counter_reading.utils.*
+import com.tavrida.counter_scanner.utils.*
 import org.opencv.core.Mat
 import org.opencv.core.Rect
 import org.opencv.core.Rect2d

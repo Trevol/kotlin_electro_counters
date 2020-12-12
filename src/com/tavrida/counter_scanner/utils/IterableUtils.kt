@@ -1,4 +1,4 @@
-package com.tavrida.counter_reading.utils
+package com.tavrida.counter_scanner.utils
 
 fun <T1, T2, T3> Iterable<T1>.zip(iterable1: Iterable<T2>, iterable2: Iterable<T3>) =
     sequence {

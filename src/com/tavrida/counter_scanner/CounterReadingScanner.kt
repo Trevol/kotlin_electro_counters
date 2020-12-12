@@ -1,12 +1,12 @@
-package com.tavrida.counter_reading
+package com.tavrida.counter_scanner
 
-import com.tavrida.counter_reading.aggregation.AggregatingBoxGroupingDigitExtractor
-import com.tavrida.counter_reading.detection.DigitDetectionResult
-import com.tavrida.counter_reading.detection.TwoStageDigitsDetector
+import com.tavrida.counter_scanner.aggregation.AggregatingBoxGroupingDigitExtractor
+import com.tavrida.counter_scanner.detection.DigitDetectionResult
+import com.tavrida.counter_scanner.detection.TwoStageDigitsDetector
 import com.tavrida.electro_counters.tracking.AggregatedDigitDetectionTracker
-import com.tavrida.counter_reading.aggregation.AggregatedDetections
-import com.tavrida.counter_reading.aggregation.DigitAtBox
-import com.tavrida.counter_reading.utils.rgb2gray
+import com.tavrida.counter_scanner.aggregation.AggregatedDetections
+import com.tavrida.counter_scanner.aggregation.DigitAtBox
+import com.tavrida.counter_scanner.utils.rgb2gray
 import org.opencv.core.Mat
 
 class CounterReadingScanner(val detector: TwoStageDigitsDetector) {

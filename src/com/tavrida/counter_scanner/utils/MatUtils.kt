@@ -1,4 +1,4 @@
-package com.tavrida.counter_reading.utils
+package com.tavrida.counter_scanner.utils
 
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs

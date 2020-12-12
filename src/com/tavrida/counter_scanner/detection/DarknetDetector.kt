@@ -1,9 +1,9 @@
-package com.tavrida.counter_reading.detection
+package com.tavrida.counter_scanner.detection
 
 import org.opencv.core.*
 import org.opencv.dnn.Dnn
 import org.opencv.dnn.Net
-import com.tavrida.counter_reading.utils.latterbox
+import com.tavrida.counter_scanner.utils.latterbox
 import kotlin.collections.ArrayList
 
 class DarknetDetector {
