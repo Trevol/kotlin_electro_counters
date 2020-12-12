@@ -45,11 +45,9 @@ class PrototypeApp {
 
         val scanner = CounterReadingScanner(createDetector())
 
-
-        val desiredPos = 114
+        val desiredPos = 0
 
         for ((framePos, bgr, rgb) in frames(pathId)) {
-
             val (currentDetections, digitsAtPoints, aggregatedDetections) = scanner.scan(rgb)
 
             if (framePos % 20 == 0) {
