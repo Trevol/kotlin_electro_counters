@@ -12,6 +12,9 @@ class AggregatedDigitDetectionTracker {
         nextFrameGray: Mat,
         prevObjects: List<AggregatedDetections>
     ): List<AggregatedDetections> {
+        if (prevObjects.isEmpty()){
+            return listOf()
+        }
         val prevBoxes = prevObjects.map { it.box }
         val (nextBoxes, statuses) = tracker.track(prevFrameGray, nextFrameGray, prevBoxes)
 

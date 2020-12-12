@@ -13,12 +13,13 @@ fun Mat.center() = Point(cols() / 2.0, rows() / 2.0)
 
 fun Mat.copy() = Mat().also { this.copyTo(it) }
 
-fun Mat.bgr2rgbInplace() = this.also { Imgproc.cvtColor(this, it, Imgproc.COLOR_BGR2RGB) }
+fun Mat.bgr2rgbInplace() = this.also { bgr -> Imgproc.cvtColor(this, bgr, Imgproc.COLOR_BGR2RGB) }
 fun Mat.bgr2rgb() = Mat().also { rgb -> Imgproc.cvtColor(this, rgb, Imgproc.COLOR_BGR2RGB) }
-fun Mat.bgr2gray() = Mat().also { rgb -> Imgproc.cvtColor(this, rgb, Imgproc.COLOR_BGR2GRAY) }
+fun Mat.bgr2gray() = Mat().also { bgr -> Imgproc.cvtColor(this, bgr, Imgproc.COLOR_BGR2GRAY) }
 fun Mat.rgb2bgr() = Mat().also { bgr -> Imgproc.cvtColor(this, bgr, Imgproc.COLOR_RGB2BGR) }
 fun Mat.rgba2rgb() = Mat().also { rgba -> Imgproc.cvtColor(this, rgba, Imgproc.COLOR_RGBA2RGB) }
 fun Mat.rgba2bgra() = Mat().also { rgba -> Imgproc.cvtColor(this, rgba, Imgproc.COLOR_RGBA2BGRA) }
+fun Mat.rgb2gray() = Mat().also { rgb -> Imgproc.cvtColor(this, rgb, Imgproc.COLOR_RGB2GRAY) }
 
 fun Mat.roi(roi: Rect, padding: Int = 0) = this.roi(roi, padding, padding)
 

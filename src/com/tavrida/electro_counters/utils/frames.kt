@@ -9,9 +9,8 @@ fun frames(path: String) = sequence {
         .forEachIndexed { index, fn ->
             val bgr = Imgcodecs.imread(fn.absolutePath)
             val rgb = bgr.bgr2rgb()
-            val gray = bgr.bgr2gray()
-            yield(FrameResult(index, bgr, rgb, gray))
+            yield(FrameResult(index, bgr, rgb))
         }
 }
 
-data class FrameResult(val pos: Int, val bgr: Mat, val rgb: Mat, val gray: Mat)
+data class FrameResult(val pos: Int, val bgr: Mat, val rgb: Mat)

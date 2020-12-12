@@ -1,24 +1,15 @@
-import com.tavrida.electro_counters.aggregation.AggregatingBoxGroupingDigitExtractor
+import com.tavrida.electro_counters.CounterReadingScanner
 import com.tavrida.electro_counters.detection.DarknetDetector
 import com.tavrida.electro_counters.detection.DigitDetectionResult
 import com.tavrida.electro_counters.detection.TwoStageDigitsDetector
-import com.tavrida.electro_counters.tracking.AggregatedDigitDetectionTracker
 import com.tavrida.electro_counters.types.AggregatedDetections
 import com.tavrida.electro_counters.types.DigitAtBox
+import com.tavrida.electro_counters.utils.*
 import nu.pattern.OpenCV
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui
 import org.opencv.imgproc.Imgproc
-import com.tavrida.electro_counters.utils.*
 import kotlin.system.exitProcess
-
-class CounterReadingScanner {
-    private var prevImg: Mat? = null
-
-    fun scan(img: Mat) {
-
-    }
-}
 
 class PrototypeApp {
     companion object {
@@ -30,7 +21,7 @@ class PrototypeApp {
     fun frames(id: Int): Sequence<FrameResult> {
         val path = "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/images/smooth_frames/" +
                 "$id/*.jpg"
-        return com.tavrida.electro_counters.utils.frames(path)
+        return frames(path)
     }
 
     fun createDetector(): TwoStageDigitsDetector {
@@ -48,30 +39,18 @@ class PrototypeApp {
         return TwoStageDigitsDetector(screenDetector, digitsDetector)
     }
 
-    fun run() {
-        // TODO("sync packages with android project")
-        // TODO("make class AggregatingSequentialDetector. Store and update state (aggregatedDetections, prevFrame)")
-        val pathId = 1
-        val detector = createDetector()
-        val digitExtractor = AggregatingBoxGroupingDigitExtractor()
-        val digitDetectionTracker = AggregatedDigitDetectionTracker()
 
-        var aggregatedDetections = listOf<AggregatedDetections>()
-        var prevFrameGray: Mat? = null
+    fun run() {
+        val pathId = 1
+
+        val scanner = CounterReadingScanner(createDetector())
+
 
         val desiredPos = 114
 
-        for ((framePos, bgr, rgb, gray) in frames(pathId)) {
-            val currentDetections = detector.detect(rgb)?.digitsDetections ?: listOf()
+        for ((framePos, bgr, rgb) in frames(pathId)) {
 
-            if (aggregatedDetections.isNotEmpty()) {
-                aggregatedDetections = digitDetectionTracker.track(prevFrameGray!!, gray, aggregatedDetections)
-            }
-            val result = digitExtractor.extract(currentDetections, aggregatedDetections)
-
-            aggregatedDetections = result.aggregatedDetections
-            val digitsAtPoints = result.digitsAtBoxes
-            prevFrameGray = gray
+            val (currentDetections, digitsAtPoints, aggregatedDetections) = scanner.scan(rgb)
 
             if (framePos % 20 == 0) {
                 println("framePos::", framePos)

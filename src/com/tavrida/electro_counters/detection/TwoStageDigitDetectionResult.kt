@@ -8,7 +8,7 @@ data class TwoStageDigitDetectionResult(
     val screenBox: Rect2d,
     val screenScore: Float,
 
-    val digitsDetections: Collection<DigitDetectionResult>
+    val digitsDetections: List<DigitDetectionResult>
 )
 
 data class DigitDetectionResult(val digit: Int, val score: Float, val boxInImage: Rect2d)
