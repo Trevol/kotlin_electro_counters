@@ -10,6 +10,12 @@ import com.tavrida.counter_scanner.utils.rgb2gray
 import org.opencv.core.Mat
 
 class CounterReadingScanner(val detector: TwoStageDigitsDetector) {
+    data class ScanResult(
+        val currentDetections: List<DigitDetectionResult>,
+        val digitsAtPoints: List<DigitAtBox>,
+        val aggregatedDetections: List<AggregatedDetections>
+    )
+
     private var prevGrayImg: Mat? = null
     val digitExtractor = AggregatingBoxGroupingDigitExtractor()
     val digitDetectionTracker = AggregatedDigitDetectionTracker()
@@ -29,8 +35,3 @@ class CounterReadingScanner(val detector: TwoStageDigitsDetector) {
     }
 }
 
-data class ScanResult(
-    val currentDetections: List<DigitDetectionResult>,
-    val digitsAtPoints: List<DigitAtBox>,
-    val aggregatedDetections: List<AggregatedDetections>
-)

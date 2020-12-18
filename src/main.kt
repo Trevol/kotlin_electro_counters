@@ -35,8 +35,9 @@ class PrototypeApp {
 
         cfgFile =
             "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/src/counter_digits/data/yolov3-tiny-10cls-320.cfg"
-        darknetModel =
-            "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/src/counter_digits/best_weights/4/yolov3-tiny-10cls-320.4.weights"
+        // darknetModel =
+        //     "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/src/counter_digits/best_weights/4/yolov3-tiny-10cls-320.4.weights"
+        darknetModel="/home/trevol/Repos/Android/android-electro-counters/app/src/main/assets/yolov3-tiny-10cls-320.4.weights"
         val digitsDetector = DarknetDetector(cfgFile, darknetModel, 320, .5f, .4f)
         return TwoStageDigitsDetector(screenDetector, digitsDetector)
     }
@@ -48,12 +49,12 @@ class PrototypeApp {
         val scanner = CounterReadingScanner(createDetector())
 
         val desiredPos = 0
-
-        for ((framePos, bgr, rgb) in frames(pathId)) {
+        val printEveryPos = 1
+        for ((framePos, fn, bgr, rgb) in frames(pathId)) {
             val (currentDetections, digitsAtPoints, aggregatedDetections) = scanner.scan(rgb)
 
-            if (framePos % 20 == 0) {
-                println("framePos::", framePos)
+            if (framePos % printEveryPos == 0) {
+                println("framePos::", framePos, "fn::", fn.name)
             }
             if (framePos >= desiredPos) {
                 val showResult = show(bgr, framePos, currentDetections, digitsAtPoints, aggregatedDetections)
@@ -89,7 +90,7 @@ class PrototypeApp {
         }
 
         HighGui.imshow("digits", digitsImg)
-        // HighGui.imshow("detections", bgr)
+        HighGui.imshow("detections", bgr)
         HighGui.imshow("aggregated", aggregatedDetectionsImg)
         return HighGui.waitKey(0)
     }

@@ -44,7 +44,7 @@ fun main_track_AggregatedDetections() {
     )
     var prevGray: Mat? = null
 
-    for ((index, bgr, rgb) in frames(1)) {
+    for ((index, fn, bgr, rgb) in frames(1)) {
         val gray = bgr.bgr2gray()
         if (prevGray != null) {
             detections = tracker.track(prevGray, gray, detections)
@@ -76,7 +76,7 @@ fun main_track_Boxes() {
 
     var prevGray: Mat? = null
 
-    for ((index, bgr, rgb) in frames(1)) {
+    for ((index, fn, bgr, rgb) in frames(1)) {
         val gray = bgr.bgr2gray()
         if (prevGray != null) {
             val (nextBoxes, statuses) = tracker.track(prevGray, gray, boxes)
@@ -110,7 +110,7 @@ fun main_track_Points() {
     )
 
     var prevGray = frames.next().bgr.bgr2gray()
-    for ((pos, bgr, rgb) in frames) {
+    for ((pos, fn, bgr, rgb) in frames) {
         val gray = bgr.bgr2gray()
         val (nextPts, statuses) = tracker.trackPoints(prevGray, gray, pts)
         pts = nextPts
