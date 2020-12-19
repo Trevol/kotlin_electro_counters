@@ -5,9 +5,9 @@ import kotlin.concurrent.thread
 
 fun simulateWork(workDurationInMs: Long) {
     val start = System.currentTimeMillis()
-    var i = 0.0
+    var i = 999999999999.999999999
     while (System.currentTimeMillis() - start < workDurationInMs) {
-        repeat(2000) { i += .999 }
+        repeat(2000) { i *= .99999999999 }
     }
 }
 
@@ -21,9 +21,18 @@ fun <E> BlockingQueue<E>.takeAll(): List<E> {
 
 inline fun <E> BlockingQueue<E>.takeLast() = takeAll().last()
 
+inline fun <E> BlockingQueue<E>.keepLast(): E? {
+    val c = mutableListOf<E>()
+    drainTo(c)
+    return c.lastOrNull()
+}
+
 
 //-------------------------------------------------
-private class Mat
+private class Mat {
+    fun toGray() = this
+}
+
 private class DigitDetectionResult
 private class AggregatedDetections
 
@@ -42,10 +51,41 @@ private fun track(
     nextImgs: List<Mat>,
     prevDetections: List<AggregatedDetections>
 ): List<AggregatedDetections> {
-    if (prevDetections.isEmpty()){
+    if (prevDetections.isEmpty()) {
         return listOf()
     }
     return prevDetections
+}
+
+private fun track(
+    imageSequence: List<Mat>,
+    prevDetections: List<AggregatedDetections>
+): List<AggregatedDetections> {
+    if (prevDetections.isEmpty()) {
+        return listOf()
+    }
+    val first = imageSequence.first()
+    val next = imageSequence.subList(1, imageSequence.lastIndex)
+    return track(first, next, prevDetections)
+}
+
+private fun track(
+    prevImg: Mat,
+    nextImg: Mat,
+    prevDetections: List<AggregatedDetections>
+): List<AggregatedDetections> {
+    if (prevDetections.isEmpty()) {
+        return listOf()
+    }
+    return prevDetections
+}
+
+private fun postToUIUpdate(rgb: Mat, detections: List<AggregatedDetections>) = Unit
+
+private data class SerialGrayItem(val serialId: Int, val gray: Mat)
+
+private fun List<SerialGrayItem>.bySerialId(serialId: Int): List<SerialGrayItem> {
+    return this.filter { it.serialId >= serialId }
 }
 
 fun main() {
@@ -75,43 +115,44 @@ fun main() {
                 break
             }
             itemForDetection = frames.last()
+
             detectorJobOutput.put(DetectorJobOutputItem(itemForDetection.serialId, aggrDetectionsForFrame))
         }
     }
 
     fun analyzeImageJob() {
-        var ggg = 0
-        class Inttt{
-            fun put() = ggg+123
-            fun get() = ggg
-        }
-        data class SerialGrayItem(val serialId: Int, val gray: Mat)
+
         var serialSeq = 0
-        val prevItems = mutableListOf<SerialGrayItem>()
+        val prevFrameItems = mutableListOf<SerialGrayItem>()
+        var actualDetections = listOf<AggregatedDetections>()
 
         while (true) {
             val msOfStart = System.currentTimeMillis()
 
-            // TODO("Check in android app: check FPS if analyzeImage make some short (5, 10, 15, 20 ms) computation")
             val rgb = Mat()
-            val gray = rgb
+            val gray = rgb.toGray()
             detectorJobInput.put(DetectorJobInputItem(serialSeq, rgb, gray))
-
-            // TODO("Need last item only. Where is no need for entire list of items")
-            val detectionOutputItems = mutableListOf<DetectorJobOutputItem>()
-            detectorJobOutput.drainTo(detectionOutputItems)
-            if (detectionOutputItems.isEmpty()){
-            //    work with local prevItems
+            if (prevFrameItems.isEmpty()) {
+                continue //special processing of first frame (no prev frame and detections to continue processing - so skipping it)
             }
-            else{
-                TODO("detector send some results")
+            val detectorResult = detectorJobOutput.keepLast()
+            if (detectorResult != null) {
+                val frames = prevFrameItems.bySerialId(detectorResult.serialId)
+                    .map { it.gray }
+                    .toMutableList()
+                frames.add(gray)
+                actualDetections = track(frames, detectorResult.detections)
+                prevFrameItems.clear()
+            } else {
+                val prevGray = prevFrameItems.last().gray
+                actualDetections = track(prevGray, gray, actualDetections)
             }
-            // track prev agg-detections (and digitsAtPoints??) to currentFrame
 
-            prevItems.add(SerialGrayItem(serialSeq, gray))
+            prevFrameItems.add(SerialGrayItem(serialSeq, gray))
 
             serialSeq++
-            // post drawing and displaying to UI-thread
+
+            postToUIUpdate(rgb, actualDetections)
 
             val cycleDuration = System.currentTimeMillis() - msOfStart
             Thread.sleep(30 - cycleDuration) // simulate frame rate - one frame per 30ms
