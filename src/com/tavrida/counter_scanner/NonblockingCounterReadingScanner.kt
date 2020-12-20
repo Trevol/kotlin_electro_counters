@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 import org.opencv.core.Mat
 import java.io.Closeable
 import java.lang.IllegalStateException
+import kotlin.concurrent.thread
 
 class NonblockingCounterReadingScanner : Closeable {
     data class ScanResult(
@@ -18,15 +19,14 @@ class NonblockingCounterReadingScanner : Closeable {
     )
 
     var closed = false
-    private var aggregatedDetections = listOf<AggregatedDetections>()
-    private val queuedFrames = ArrayDeque<RgbWithGray>()
 
     private val detectionTracker = AggregatedDigitDetectionTracker()
     private val digitExtractor = AggregatingBoxGroupingDigitExtractor()
-    private val detectionJob = startDetectionJob()
+
+    val detectorThread = startDetectorThread()
 
     override fun close() {
-        detectionJob.cancel() //should wait for cancelation???
+        detectorThread.interrupt() //should wait for cancelation???
         // TODO: clear frame queue and other state
         closed = true
         TODO()
@@ -36,34 +36,12 @@ class NonblockingCounterReadingScanner : Closeable {
         if (closed) {
             throw IllegalStateException("Scanner is closed")
         }
-        if (queuedFrames.isEmpty()) {
-            return ScanResult(listOf(), listOf())
-        }
-        val gray = rgbImg.rgb2gray()
-        aggregatedDetections = detectionTracker.track(queuedFrames.last().gray, gray, aggregatedDetections)
-        queuedFrames.addLast(RgbWithGray(rgbImg, gray))
-        return ScanResult(
-            digitExtractor.extractDigits(aggregatedDetections),
-            aggregatedDetections
-        )
-    }
-
-    private fun startDetectionJob() = GlobalScope.launch(Dispatchers.Default) { detectionRoutine(this) }
-
-
-    private fun detectionRoutine(coroutineScope: CoroutineScope) {
-        while (coroutineScope.isActive) {
-            // wait for image to detect
-            //   - semaphore
-            // how to wait for last (But) item arrival
-        }
         TODO()
     }
 
-    private fun detectionResultReady(detectionResult: TwoStageDigitDetectionResult) {
-        // repropagate aggregated detec
+    fun startDetectorThread() = thread {
         TODO()
     }
+
 }
 
-private data class RgbWithGray(val rgb: Mat, val gray: Mat)

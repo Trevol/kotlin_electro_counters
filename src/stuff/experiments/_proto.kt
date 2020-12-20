@@ -140,6 +140,7 @@ fun main() {
                 val frames = prevFrameItems.bySerialId(detectorResult.serialId)
                     .map { it.gray }
                     .toMutableList()
+                assert(frames.isNotEmpty())
                 frames.add(gray)
                 actualDetections = track(frames, detectorResult.detections)
                 prevFrameItems.clear()
