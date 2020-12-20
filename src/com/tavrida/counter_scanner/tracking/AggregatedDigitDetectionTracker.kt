@@ -12,7 +12,7 @@ class AggregatedDigitDetectionTracker {
         nextFrameGray: Mat,
         prevObjects: List<AggregatedDetections>
     ): List<AggregatedDetections> {
-        if (prevObjects.isEmpty()){
+        if (prevObjects.isEmpty()) {
             return listOf()
         }
         val prevBoxes = prevObjects.map { it.box }
@@ -28,6 +28,22 @@ class AggregatedDigitDetectionTracker {
 
         return nextObjects
     }
+
+    fun track(
+        imageSequence: List<Mat>,
+        prevDetections: List<AggregatedDetections>
+    ): List<AggregatedDetections> {
+        TODO()
+    }
+
+    fun track(
+        prevImg: Mat,
+        nextImgs: List<Mat>,
+        prevDetections: List<AggregatedDetections>
+    ): List<AggregatedDetections> {
+        TODO()
+    }
+
 
     private fun isAbnormalTrack(prevBox: Rect2d, nextBox: Rect2d): Boolean {
         val wRatio = prevBox.width / nextBox.width

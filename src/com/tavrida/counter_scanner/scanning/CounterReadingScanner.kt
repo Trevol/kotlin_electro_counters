@@ -1,4 +1,4 @@
-package com.tavrida.counter_scanner
+package com.tavrida.counter_scanner.scanning
 
 import com.tavrida.counter_scanner.aggregation.AggregatingBoxGroupingDigitExtractor
 import com.tavrida.counter_scanner.detection.DigitDetectionResult
@@ -6,6 +6,7 @@ import com.tavrida.counter_scanner.detection.TwoStageDigitsDetector
 import com.tavrida.electro_counters.tracking.AggregatedDigitDetectionTracker
 import com.tavrida.counter_scanner.aggregation.AggregatedDetections
 import com.tavrida.counter_scanner.aggregation.DigitAtBox
+import com.tavrida.counter_scanner.scanning.nonblocking.DetectorJob
 import com.tavrida.counter_scanner.utils.rgb2gray
 import org.opencv.core.Mat
 

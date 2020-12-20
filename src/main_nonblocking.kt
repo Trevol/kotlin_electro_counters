@@ -5,6 +5,7 @@ import com.tavrida.counter_scanner.detection.TwoStageDigitsDetector
 import com.tavrida.counter_scanner.utils.*
 import com.tavrida.counter_scanner.aggregation.AggregatedDetections
 import com.tavrida.counter_scanner.aggregation.DigitAtBox
+import com.tavrida.counter_scanner.scanning.nonblocking.NonblockingCounterReadingScanner
 import nu.pattern.OpenCV
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui
@@ -13,7 +14,7 @@ import stuff.FrameResult
 import stuff.frames
 import kotlin.system.exitProcess
 
-private class PrototypeApp {
+private class NonblockingPrototypeApp {
     companion object {
         init {
             OpenCV.loadLocally()
@@ -46,22 +47,23 @@ private class PrototypeApp {
     fun run() {
         val pathId = 1
 
-        val scanner = CounterReadingScanner(createDetector())
+        val scanner = NonblockingCounterReadingScanner(createDetector())
 
         val desiredPos = 0
         val printEveryPos = 1
         for ((framePos, fn, bgr, rgb) in frames(pathId)) {
-            val (currentDetections, digitsAtPoints, aggregatedDetections) = scanner.scan(rgb)
+            val (digitsAtPoints, aggregatedDetections) = scanner.scan(rgb)
 
             if (framePos % printEveryPos == 0) {
                 println("framePos::", framePos, "fn::", fn.name)
             }
             if (framePos >= desiredPos) {
-                val showResult = show(bgr, framePos, currentDetections, digitsAtPoints, aggregatedDetections)
+                val showResult = show(bgr, framePos, digitsAtPoints, aggregatedDetections)
                 if (showResult == 27)
                     break
             }
         }
+        scanner.close()
     }
 
     val greenBgr = Scalar(0, 255, 0)
@@ -70,18 +72,12 @@ private class PrototypeApp {
     private fun show(
         bgr: Mat,
         pos: Int,
-        currentDetections: Iterable<DigitDetectionResult>,
         digitsAtPoints: Iterable<DigitAtBox>,
         aggregatedDetections: Iterable<AggregatedDetections>
     ): Int {
         val digitsImg = bgr.copy()
         val aggregatedDetectionsImg = bgr.copy()
 
-        for (det in currentDetections) {
-            val box = det.boxInImage.toRect()
-            Imgproc.rectangle(bgr, box, greenBgr, 1)
-            // Imgproc.rectangle(aggregatedDetectionsImg, box, redBgr, 1)
-        }
         for (d in digitsAtPoints) {
             digitRenderer.render(digitsImg, d.digit, d.box.center(), greenBgr)
         }
@@ -97,7 +93,7 @@ private class PrototypeApp {
 }
 
 fun main() {
-    PrototypeApp().run()
+    NonblockingPrototypeApp().run()
     exitProcess(0)
 }
 

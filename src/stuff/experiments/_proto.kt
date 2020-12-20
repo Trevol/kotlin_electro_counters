@@ -1,5 +1,8 @@
 package stuff.experiments
 
+import com.tavrida.counter_scanner.scanning.nonblocking.keepLast
+import com.tavrida.counter_scanner.scanning.nonblocking.takeAll
+import com.tavrida.counter_scanner.scanning.nonblocking.takeLast
 import java.util.concurrent.*
 import kotlin.concurrent.thread
 
@@ -14,18 +17,7 @@ fun simulateWork(workDurationInMs: Long) {
 inline fun isRunning() = !isInterrupted()
 inline fun isInterrupted() = Thread.currentThread().isInterrupted
 
-fun <E> BlockingQueue<E>.takeAll(): List<E> {
-    val first = take()
-    return mutableListOf<E>(first).also { this.drainTo(it) }
-}
 
-inline fun <E> BlockingQueue<E>.takeLast() = takeAll().last()
-
-inline fun <E> BlockingQueue<E>.keepLast(): E? {
-    val c = mutableListOf<E>()
-    drainTo(c)
-    return c.lastOrNull()
-}
 
 
 //-------------------------------------------------
@@ -85,7 +77,10 @@ private fun postToUIUpdate(rgb: Mat, detections: List<AggregatedDetections>) = U
 private data class SerialGrayItem(val serialId: Int, val gray: Mat)
 
 private fun List<SerialGrayItem>.bySerialId(serialId: Int): List<SerialGrayItem> {
-    return this.filter { it.serialId >= serialId }
+    val firstSerialId = this[0].serialId
+    val serialIdIndex = serialId - firstSerialId
+    return subList(serialIdIndex, lastIndex)
+//    return this.filter { it.serialId >= serialId }
 }
 
 fun main() {
@@ -120,20 +115,16 @@ fun main() {
         }
     }
 
-    fun analyzeImageJob() {
-
+    class Scanner {
         var serialSeq = 0
         val prevFrameItems = mutableListOf<SerialGrayItem>()
         var actualDetections = listOf<AggregatedDetections>()
 
-        while (true) {
-            val msOfStart = System.currentTimeMillis()
-
-            val rgb = Mat()
+        fun scan(rgb: Mat): List<AggregatedDetections> {
             val gray = rgb.toGray()
             detectorJobInput.put(DetectorJobInputItem(serialSeq, rgb, gray))
             if (prevFrameItems.isEmpty()) {
-                continue //special processing of first frame (no prev frame and detections to continue processing - so skipping it)
+                return listOf() //special processing of first frame (no prev frame and detections to continue processing - so skipping it)
             }
             val detectorResult = detectorJobOutput.keepLast()
             if (detectorResult != null) {
@@ -152,6 +143,22 @@ fun main() {
             prevFrameItems.add(SerialGrayItem(serialSeq, gray))
 
             serialSeq++
+
+            return actualDetections
+        }
+    }
+
+    val scanner = Scanner()
+
+    fun analyzeImageJob() {
+
+
+        while (true) {
+            val msOfStart = System.currentTimeMillis()
+
+            val rgb = Mat()
+
+            val actualDetections = scanner.scan(rgb)
 
             postToUIUpdate(rgb, actualDetections)
 

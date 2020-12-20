@@ -1,7 +1,5 @@
 package com.tavrida.counter_scanner.aggregation
 
-import com.tavrida.counter_scanner.aggregation.AggregatingBoxGroupingDigitExtractor.Companion.digitWithMaxCount
-import com.tavrida.counter_scanner.aggregation.AggregatingBoxGroupingDigitExtractor.Companion.totalCount
 import com.tavrida.counter_scanner.detection.DigitDetectionResult
 
 data class Digits_AggregatedDetections(
@@ -37,8 +35,8 @@ class AggregatingBoxGroupingDigitExtractor {
     }
 
     fun extractDigits(detections: Collection<AggregatedDetections>) = detections
-        .filter { it.totalCount() >= minBoxesInGroup }
-        .map { DigitAtBox(it.digitWithMaxCount(), it.box) }
+        .filter { it.totalCount >= minBoxesInGroup }
+        .map { DigitAtBox(it.digitWithMaxCount, it.box) }
 
     companion object {
         const val minBoxesInGroup = 3
@@ -48,9 +46,6 @@ class AggregatingBoxGroupingDigitExtractor {
                 .groupBy({ it.digit }, { it.count })
                 .map { digit, digitCounts -> DigitCount(digit, digitCounts.sum()) }
 
-
-        inline fun AggregatedDetections.totalCount() = digitsCounts.sumOf { it.count }
-        inline fun AggregatedDetections.digitWithMaxCount() = digitsCounts.maxByOrNull { it.count }!!.digit
 
         inline fun <K, V, R> Map<out K, V>.map(transform: (K, V) -> R) =
             this.map { entry -> transform(entry.key, entry.value) }
