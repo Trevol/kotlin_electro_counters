@@ -24,7 +24,16 @@ internal class DetectorJob(
         var aggrDetectionsForFrame = listOf<AggregatedDetections>()
         var itemForDetection = input.takeLast()
         while (isRunning()) {
+            val startMs = System.currentTimeMillis()
+
             val detectionsForFrame = detector.detect(itemForDetection.rgb)?.digitsDetections ?: listOf()
+
+            val endMs = System.currentTimeMillis()
+            val sleepDurationMs = 350 - (endMs - startMs)
+            if (sleepDurationMs > 0) {
+                Thread.sleep(sleepDurationMs)
+            }
+
             if (isInterrupted()) { // can be interrupted during relatively long detection stage
                 break
             }
@@ -33,9 +42,10 @@ internal class DetectorJob(
             //TODO: may be exec in separate loop over inputItems - because propagation to multiple frames can take some time
             //TODO: and may be exec propagation in separate thread/job
             val frames = input.takeAll() // wait and take all items from channel
-            aggrDetectionsForFrame = detectionTracker.track(itemForDetection.gray, frames.map { it.gray }, aggrDetectionsForFrame)
+            aggrDetectionsForFrame =
+                detectionTracker.track(itemForDetection.gray, frames.map { it.gray }, aggrDetectionsForFrame)
 
-            if (isInterrupted()) { // can be interrupted during relatively long detection stage
+            if (isInterrupted()) { // can be interrupted during relatively long propagation (multi-frame) stage
                 break
             }
             itemForDetection = frames.last()
@@ -56,6 +66,11 @@ internal class DetectorJob(
 
     fun stop() {
         jobThread.interrupt()
+    }
+
+    private companion object{
+        private inline fun isRunning() = !isInterrupted()
+        private inline fun isInterrupted() = Thread.currentThread().isInterrupted
     }
 }
 

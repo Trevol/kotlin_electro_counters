@@ -33,7 +33,18 @@ class AggregatedDigitDetectionTracker {
         imageSequence: List<Mat>,
         prevDetections: List<AggregatedDetections>
     ): List<AggregatedDetections> {
-        TODO()
+        assert(imageSequence.size >= 2)
+        if (prevDetections.isEmpty())
+            return prevDetections
+
+        var detections = prevDetections
+
+        for (i in 1..imageSequence.lastIndex) {
+            detections = track(imageSequence[i - 1], imageSequence[i], detections)
+            if (detections.isEmpty())
+                break
+        }
+        return detections
     }
 
     fun track(
@@ -41,7 +52,12 @@ class AggregatedDigitDetectionTracker {
         nextImgs: List<Mat>,
         prevDetections: List<AggregatedDetections>
     ): List<AggregatedDetections> {
-        TODO()
+        assert(nextImgs.isNotEmpty())
+        if (prevDetections.isEmpty())
+            return prevDetections
+
+        val imgSequence = mutableListOf(prevImg).apply { addAll(nextImgs) }
+        return track(imgSequence, prevDetections)
     }
 
 

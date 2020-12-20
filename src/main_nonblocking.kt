@@ -1,12 +1,11 @@
-import com.tavrida.counter_scanner.scanning.CounterReadingScanner
 import com.tavrida.counter_scanner.detection.DarknetDetector
-import com.tavrida.counter_scanner.detection.DigitDetectionResult
 import com.tavrida.counter_scanner.detection.TwoStageDigitsDetector
 import com.tavrida.counter_scanner.utils.*
 import com.tavrida.counter_scanner.aggregation.AggregatedDetections
 import com.tavrida.counter_scanner.aggregation.DigitAtBox
 import com.tavrida.counter_scanner.scanning.nonblocking.NonblockingCounterReadingScanner
 import nu.pattern.OpenCV
+import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.highgui.HighGui
 import org.opencv.imgproc.Imgproc
@@ -27,7 +26,7 @@ private class NonblockingPrototypeApp {
         return frames(path)
     }
 
-    fun createDetector(): TwoStageDigitsDetector {
+    fun createDetector(warmup: Boolean): TwoStageDigitsDetector {
         var cfgFile =
             "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/src/counters/data/yolov3-tiny-2cls-320.cfg"
         var darknetModel =
@@ -38,30 +37,41 @@ private class NonblockingPrototypeApp {
             "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/src/counter_digits/data/yolov3-tiny-10cls-320.cfg"
         // darknetModel =
         //     "/home/trevol/Repos/experiments_with_lightweight_detectors/electric_counters/src/counter_digits/best_weights/4/yolov3-tiny-10cls-320.4.weights"
-        darknetModel="/home/trevol/Repos/Android/android-electro-counters/app/src/main/assets/yolov3-tiny-10cls-320.4.weights"
+        darknetModel =
+            "/home/trevol/Repos/Android/android-electro-counters/app/src/main/assets/yolov3-tiny-10cls-320.4.weights"
         val digitsDetector = DarknetDetector(cfgFile, darknetModel, 320, .5f, .4f)
+
+        if (warmup) {
+            warmup(screenDetector)
+            warmup(digitsDetector)
+        }
         return TwoStageDigitsDetector(screenDetector, digitsDetector)
     }
 
+    fun warmup(detector: DarknetDetector) {
+        detector.detect(Mat(100, 320, CvType.CV_8UC3))
+    }
 
     fun run() {
         val pathId = 1
 
-        val scanner = NonblockingCounterReadingScanner(createDetector())
+        val detector = createDetector(warmup = true)
+        val scanner = NonblockingCounterReadingScanner(detector)
 
         val desiredPos = 0
         val printEveryPos = 1
         for ((framePos, fn, bgr, rgb) in frames(pathId)) {
+            val msOfStart = System.currentTimeMillis()
+
             val (digitsAtPoints, aggregatedDetections) = scanner.scan(rgb)
 
-            if (framePos % printEveryPos == 0) {
-                println("framePos::", framePos, "fn::", fn.name)
-            }
-            if (framePos >= desiredPos) {
-                val showResult = show(bgr, framePos, digitsAtPoints, aggregatedDetections)
-                if (showResult == 27)
-                    break
-            }
+            show(bgr, framePos, digitsAtPoints, aggregatedDetections)
+
+            val cycleDuration = System.currentTimeMillis() - msOfStart
+
+            val showResult = HighGui.waitKey((30 - cycleDuration).toInt())
+            if (showResult == 27)
+                break
         }
         scanner.close()
     }
@@ -74,7 +84,7 @@ private class NonblockingPrototypeApp {
         pos: Int,
         digitsAtPoints: Iterable<DigitAtBox>,
         aggregatedDetections: Iterable<AggregatedDetections>
-    ): Int {
+    ) {
         val digitsImg = bgr.copy()
         val aggregatedDetectionsImg = bgr.copy()
 
@@ -88,7 +98,6 @@ private class NonblockingPrototypeApp {
         HighGui.imshow("digits", digitsImg)
         HighGui.imshow("detections", bgr)
         HighGui.imshow("aggregated", aggregatedDetectionsImg)
-        return HighGui.waitKey(0)
     }
 }
 

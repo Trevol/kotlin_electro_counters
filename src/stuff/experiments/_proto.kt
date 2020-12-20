@@ -14,8 +14,8 @@ fun simulateWork(workDurationInMs: Long) {
     }
 }
 
-inline fun isRunning() = !isInterrupted()
-inline fun isInterrupted() = Thread.currentThread().isInterrupted
+private inline fun isRunning() = !isInterrupted()
+private inline fun isInterrupted() = Thread.currentThread().isInterrupted
 
 
 

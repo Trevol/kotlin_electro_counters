@@ -46,6 +46,7 @@ class NonblockingCounterReadingScanner(detector: TwoStageDigitsDetector) : Close
         if (prevFrameItems.isEmpty()) {
             // special processing of first frame
             // no prev frame and detections to continue processing - so skipping processing
+            prevFrameItems.add(SerialGrayItem(serialSeq, grayImg))
             return noDetections()
         }
         val detectorResult = detectorJob.output.keepLast()
@@ -77,7 +78,8 @@ class NonblockingCounterReadingScanner(detector: TwoStageDigitsDetector) : Close
         private fun List<SerialGrayItem>.bySerialId(serialId: Int): List<SerialGrayItem> {
             val firstSerialId = this[0].serialId
             val serialIdIndex = serialId - firstSerialId
-            return subList(serialIdIndex, lastIndex)
+            return subList(serialIdIndex, lastIndex+1)
+
             // return this.filter { it.serialId >= serialId }
         }
     }
