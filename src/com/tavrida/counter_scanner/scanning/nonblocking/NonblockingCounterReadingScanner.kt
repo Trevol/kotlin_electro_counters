@@ -11,9 +11,12 @@ import java.io.Closeable
 import kotlin.IllegalStateException
 
 class NonblockingCounterReadingScanner(detector: TwoStageDigitsDetector) : Closeable {
+
+    data class ReadingInfo(val reading: Int, val millisecondsOfStability: Long)
     data class ScanResult(
         val digitsAtBoxes: List<DigitAtBox>,
-        val aggregatedDetections: List<AggregatedDetections>
+        val aggregatedDetections: List<AggregatedDetections>,
+        val readingInfo: ReadingInfo
     )
 
     var stopped = false
@@ -67,18 +70,26 @@ class NonblockingCounterReadingScanner(detector: TwoStageDigitsDetector) : Close
 
         serialSeq++
         val digitsAtBoxes = digitExtractor.extractDigits(actualDetections)
-        return ScanResult(digitsAtBoxes, actualDetections)
+
+        val readingInfo = readingInfo(digitsAtBoxes)
+        return ScanResult(digitsAtBoxes, actualDetections, readingInfo)
+    }
+
+    var prevReading = -1
+    val startOfReading = -1L
+    private fun readingInfo(digitsAtBoxes: List<DigitAtBox>): ReadingInfo {
+        TODO("Not yet implemented")
     }
 
     private companion object {
         private data class SerialGrayItem(val serialId: Int, val gray: Mat)
 
-        fun noDetections() = ScanResult(listOf(), listOf())
+        fun noDetections() = ScanResult(listOf(), listOf(), ReadingInfo(-1, -1))
 
         private fun List<SerialGrayItem>.bySerialId(serialId: Int): List<SerialGrayItem> {
             val firstSerialId = this[0].serialId
             val serialIdIndex = serialId - firstSerialId
-            return subList(serialIdIndex, lastIndex+1)
+            return subList(serialIdIndex, lastIndex + 1)
 
             // return this.filter { it.serialId >= serialId }
         }
